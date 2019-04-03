@@ -412,6 +412,9 @@ void AtomBrowserClient::OverrideWebkitPrefs(content::RenderViewHost* host,
   prefs->preferred_color_scheme = native_theme->SystemDarkModeEnabled()
                                       ? blink::PreferredColorScheme::kDark
                                       : blink::PreferredColorScheme::kLight;
+#if !BUILDFLAG(ENABLE_PICTURE_IN_PICTURE)
+  prefs->picture_in_picture_enabled = false;
+#endif
 
   SetFontDefaults(prefs);
 
@@ -681,6 +684,14 @@ bool AtomBrowserClient::CanCreateWindow(
 
   return false;
 }
+
+#if BUILDFLAG(ENABLE_PICTURE_IN_PICTURE)
+std::unique_ptr<content::OverlayWindow>
+AtomBrowserClient::CreateWindowForPictureInPicture(
+    content::PictureInPictureWindowController* controller) {
+  return content::OverlayWindow::Create(controller);
+}
+#endif
 
 void AtomBrowserClient::GetAdditionalAllowedSchemesForFileSystem(
     std::vector<std::string>* additional_schemes) {
