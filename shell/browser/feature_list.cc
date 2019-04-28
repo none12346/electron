@@ -10,6 +10,7 @@
 #include "base/command_line.h"
 #include "base/feature_list.h"
 #include "content/public/common/content_features.h"
+#include "electron/buildflags/buildflags.h"
 
 namespace electron {
 
@@ -19,6 +20,9 @@ void InitializeFeatureList() {
       cmd_line->GetSwitchValueASCII(::switches::kEnableFeatures);
   auto disable_features =
       cmd_line->GetSwitchValueASCII(::switches::kDisableFeatures);
+#if !BUILDFLAG(ENABLE_PICTURE_IN_PICTURE)
+  disable_features += std::string(",") + media::kPictureInPicture.name;
+#endif
   // Disable creation of spare renderer process with site-per-process mode,
   // it interferes with our process preference tracking for non sandboxed mode.
   // Can be reenabled when our site instance policy is aligned with chromium
