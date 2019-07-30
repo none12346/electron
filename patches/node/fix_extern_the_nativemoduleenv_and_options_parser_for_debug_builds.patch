@@ -18,7 +18,7 @@ index b91a5059cd1f19d87e5876c372f3ded60681a5df..f81cf8dfb892a8ddd9084c5d9477b178
    static void Initialize(v8::Local<v8::Object> target,
                           v8::Local<v8::Value> unused,
 diff --git a/src/node_options.h b/src/node_options.h
-index b8959745f5bd66bb19f3f1d9b1bf45e8a6ebd4f7..5ef8476387e71d92ec7936959f8cc8a211490f1b 100644
+index ce054e15219f5a181f99618a98374b51312d39d6..1da6af58b2355fdb3d29a558eb62b6fb421222da 100644
 --- a/src/node_options.h
 +++ b/src/node_options.h
 @@ -44,7 +44,7 @@ class HostPort {
@@ -30,7 +30,7 @@ index b8959745f5bd66bb19f3f1d9b1bf45e8a6ebd4f7..5ef8476387e71d92ec7936959f8cc8a2
   public:
    virtual void CheckOptions(std::vector<std::string>* errors) {}
    virtual ~Options() = default;
-@@ -436,7 +436,7 @@ class NODE_EXTERN DebugOptionsParser : public OptionsParser<DebugOptions> {
+@@ -435,7 +435,7 @@ class OptionsParser {
  
  using StringVector = std::vector<std::string>;
  template <class OptionsType, class = Options>
