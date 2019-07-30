@@ -7,18 +7,17 @@
 #include <string>
 
 #include "base/threading/thread_task_runner_handle.h"
-#include "native_mate/constructor.h"
-#include "native_mate/dictionary.h"
 #include "shell/browser/api/atom_api_menu.h"
 #include "shell/browser/browser.h"
 #include "shell/common/api/atom_api_native_image.h"
-#include "shell/common/native_mate_converters/gfx_converter.h"
-#include "shell/common/native_mate_converters/image_converter.h"
-#include "shell/common/native_mate_converters/string16_converter.h"
+#include "shell/common/api/gin_utils.h"
+#include "shell/common/gin_converters/gfx_converter_gin_adapter.h"
+// #include "shell/common/native_mate_converters/image_converter.h"
+// #include "shell/common/native_mate_converters/string16_converter.h"
 #include "shell/common/node_includes.h"
 #include "ui/gfx/image/image.h"
 
-namespace mate {
+namespace gin {
 
 template <>
 struct Converter<electron::TrayIcon::HighlightMode> {
@@ -44,112 +43,102 @@ struct Converter<electron::TrayIcon::HighlightMode> {
     return false;
   }
 };
-}  // namespace mate
+}  // namespace gin
 
 namespace electron {
 
 namespace api {
 
-Tray::Tray(v8::Isolate* isolate,
-           v8::Local<v8::Object> wrapper,
-           mate::Handle<NativeImage> image)
-    : tray_icon_(TrayIcon::Create()) {
-  SetImage(isolate, image);
-  tray_icon_->AddObserver(this);
+gin::WrapperInfo Tray::kWrapperInfo = {gin::kEmbedderNativeGin};
 
-  InitWith(isolate, wrapper);
+Tray::Tray() : tray_icon_(TrayIcon::Create()) {
+  LOG(INFO) << "Tray()";
+  // SetImage(isolate, image);
+  tray_icon_->AddObserver(this);
 }
 
-Tray::~Tray() = default;
-
-// static
-mate::WrappableBase* Tray::New(mate::Handle<NativeImage> image,
-                               mate::Arguments* args) {
-  if (!Browser::Get()->is_ready()) {
-    args->ThrowError("Cannot create Tray before app is ready");
-    return nullptr;
-  }
-  return new Tray(args->isolate(), args->GetThis(), image);
+Tray::~Tray() {
+  LOG(INFO) << "~Tray()";
 }
 
 void Tray::OnClicked(const gfx::Rect& bounds,
                      const gfx::Point& location,
                      int modifiers) {
-  EmitWithFlags("click", modifiers, bounds, location);
+  // EmitWithFlags("click", modifiers, bounds, location);
 }
 
 void Tray::OnDoubleClicked(const gfx::Rect& bounds, int modifiers) {
-  EmitWithFlags("double-click", modifiers, bounds);
+  // EmitWithFlags("double-click", modifiers, bounds);
 }
 
 void Tray::OnRightClicked(const gfx::Rect& bounds, int modifiers) {
-  EmitWithFlags("right-click", modifiers, bounds);
+  // EmitWithFlags("right-click", modifiers, bounds);
 }
 
 void Tray::OnBalloonShow() {
-  Emit("balloon-show");
+  // Emit("balloon-show");
 }
 
 void Tray::OnBalloonClicked() {
-  Emit("balloon-click");
+  // Emit("balloon-click");
 }
 
 void Tray::OnBalloonClosed() {
-  Emit("balloon-closed");
+  // Emit("balloon-closed");
 }
 
 void Tray::OnDrop() {
-  Emit("drop");
+  // Emit("drop");
 }
 
 void Tray::OnDropFiles(const std::vector<std::string>& files) {
-  Emit("drop-files", files);
+  // Emit("drop-files", files);
 }
 
 void Tray::OnDropText(const std::string& text) {
-  Emit("drop-text", text);
+  // Emit("drop-text", text);
 }
 
 void Tray::OnMouseEntered(const gfx::Point& location, int modifiers) {
-  EmitWithFlags("mouse-enter", modifiers, location);
+  // EmitWithFlags("mouse-enter", modifiers, location);
 }
 
 void Tray::OnMouseExited(const gfx::Point& location, int modifiers) {
-  EmitWithFlags("mouse-leave", modifiers, location);
+  // EmitWithFlags("mouse-leave", modifiers, location);
 }
 
 void Tray::OnMouseMoved(const gfx::Point& location, int modifiers) {
-  EmitWithFlags("mouse-move", modifiers, location);
+  // EmitWithFlags("mouse-move", modifiers, location);
 }
 
 void Tray::OnDragEntered() {
-  Emit("drag-enter");
+  // Emit("drag-enter");
 }
 
 void Tray::OnDragExited() {
-  Emit("drag-leave");
+  // Emit("drag-leave");
 }
 
 void Tray::OnDragEnded() {
-  Emit("drag-end");
+  // Emit("drag-end");
 }
 
-void Tray::SetImage(v8::Isolate* isolate, mate::Handle<NativeImage> image) {
-#if defined(OS_WIN)
-  tray_icon_->SetImage(image->GetHICON(GetSystemMetrics(SM_CXSMICON)));
-#else
-  tray_icon_->SetImage(image->image());
-#endif
-}
+// void Tray::SetImage(v8::Isolate* isolate, gin::Handle<NativeImage> image) {
+// #if defined(OS_WIN)
+//   tray_icon_->SetImage(image->GetHICON(GetSystemMetrics(SM_CXSMICON)));
+// #else
+//   tray_icon_->SetImage(image->image());
+// #endif
+// }
 
-void Tray::SetPressedImage(v8::Isolate* isolate,
-                           mate::Handle<NativeImage> image) {
-#if defined(OS_WIN)
-  tray_icon_->SetPressedImage(image->GetHICON(GetSystemMetrics(SM_CXSMICON)));
-#else
-  tray_icon_->SetPressedImage(image->image());
-#endif
-}
+// void Tray::SetPressedImage(v8::Isolate* isolate,
+//                            gin::Handle<NativeImage> image) {
+// #if defined(OS_WIN)
+//   tray_icon_->SetPressedImage(image->GetHICON(GetSystemMetrics(SM_CXSMICON)));
+// #else
+//   tray_icon_->SetPressedImage(image->image());
+// #endif
+// }
 
 void Tray::SetToolTip(const std::string& tool_tip) {
   tray_icon_->SetToolTip(tool_tip);
@@ -187,51 +176,58 @@ bool Tray::GetIgnoreDoubleClickEvents() {
 #endif
 }
 
-void Tray::DisplayBalloon(mate::Arguments* args,
-                          const mate::Dictionary& options) {
-  mate::Handle<NativeImage> icon;
-  options.Get("icon", &icon);
-  base::string16 title, content;
-  if (!options.Get("title", &title) || !options.Get("content", &content)) {
-    args->ThrowError("'title' and 'content' must be defined");
-    return;
-  }
+// void Tray::DisplayBalloon(gin::Arguments* args, gin::Dictionary& options) {
+//   gin::Handle<NativeImage> icon;
+//   options.Get("icon", &icon);
+//   base::string16 title, content;
+//   if (!options.Get("title", &title) || !options.Get("content", &content)) {
+//     args->ThrowTypeError("'title' and 'content' must be defined");
+//     return;
+//   }
 
-#if defined(OS_WIN)
-  tray_icon_->DisplayBalloon(
-      icon.IsEmpty() ? NULL : icon->GetHICON(GetSystemMetrics(SM_CXICON)),
-      title, content);
-#else
-  tray_icon_->DisplayBalloon(icon.IsEmpty() ? gfx::Image() : icon->image(),
-                             title, content);
-#endif
-}
+// #if defined(OS_WIN)
+//   tray_icon_->DisplayBalloon(
+//       icon.IsEmpty() ? NULL : icon->GetHICON(GetSystemMetrics(SM_CXICON)),
+//       title, content);
+// #else
+//   tray_icon_->DisplayBalloon(icon.IsEmpty() ? gfx::Image() : icon->image(),
+//                              title, content);
+// #endif
+// }
 
-void Tray::PopUpContextMenu(mate::Arguments* args) {
-  mate::Handle<Menu> menu;
-  args->GetNext(&menu);
-  gfx::Point pos;
-  args->GetNext(&pos);
-  tray_icon_->PopUpContextMenu(pos, menu.IsEmpty() ? nullptr : menu->model());
-}
+// void Tray::PopUpContextMenu(gin::Arguments* args) {
+//   gin::Handle<Menu> menu;
+//   args->GetNext(&menu);
+//   gfx::Point pos;
+//   args->GetNext(&pos);
+//   tray_icon_->PopUpContextMenu(pos, menu.IsEmpty() ? nullptr :
+//   menu->model());
+// }
 
-void Tray::SetContextMenu(v8::Isolate* isolate, mate::Handle<Menu> menu) {
-  menu_.Reset(isolate, menu.ToV8());
-  tray_icon_->SetContextMenu(menu.IsEmpty() ? nullptr : menu->model());
-}
+// void Tray::SetContextMenu(v8::Isolate* isolate, gin::Handle<Menu> menu) {
+//   menu_.Reset(isolate, menu.ToV8());
+//   tray_icon_->SetContextMenu(menu.IsEmpty() ? nullptr : menu->model());
+// }
 
-gfx::Rect Tray::GetBounds() {
-  return tray_icon_->GetBounds();
-}
+// gfx::Rect Tray::GetBounds() {
+//   return tray_icon_->GetBounds();
+// }
 
 // static
-void Tray::BuildPrototype(v8::Isolate* isolate,
-                          v8::Local<v8::FunctionTemplate> prototype) {
-  prototype->SetClassName(mate::StringToV8(isolate, "Tray"));
-  mate::ObjectTemplateBuilder(isolate, prototype->PrototypeTemplate())
-      .MakeDestroyable()
-      .SetMethod("setImage", &Tray::SetImage)
-      .SetMethod("setPressedImage", &Tray::SetPressedImage)
+gin::Handle<Tray> Tray::Create(v8::Isolate* isolate, gin::Arguments* args) {
+  if (!Browser::Get()->is_ready()) {
+    args->ThrowTypeError("Cannot create Tray before app is ready");
+    // return nullptr; // TODO(deermichel)
+  }
+  return gin::CreateHandle(isolate, new Tray());
+}
+
+gin::ObjectTemplateBuilder Tray::GetObjectTemplateBuilder(
+    v8::Isolate* isolate) {
+  return gin::Wrappable<Tray>::GetObjectTemplateBuilder(isolate)
+      // .MakeDestroyable()
+      // .SetMethod("setImage", &Tray::SetImage)
+      // .SetMethod("setPressedImage", &Tray::SetPressedImage)
       .SetMethod("setToolTip", &Tray::SetToolTip)
       .SetMethod("setTitle", &Tray::SetTitle)
       .SetMethod("getTitle", &Tray::GetTitle)
@@ -239,11 +235,11 @@ void Tray::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("setIgnoreDoubleClickEvents",
                  &Tray::SetIgnoreDoubleClickEvents)
       .SetMethod("getIgnoreDoubleClickEvents",
-                 &Tray::GetIgnoreDoubleClickEvents)
-      .SetMethod("displayBalloon", &Tray::DisplayBalloon)
-      .SetMethod("popUpContextMenu", &Tray::PopUpContextMenu)
-      .SetMethod("setContextMenu", &Tray::SetContextMenu)
-      .SetMethod("getBounds", &Tray::GetBounds);
+                 &Tray::GetIgnoreDoubleClickEvents);
+  // .SetMethod("displayBalloon", &Tray::DisplayBalloon)
+  // .SetMethod("popUpContextMenu", &Tray::PopUpContextMenu);
+  // .SetMethod("setContextMenu", &Tray::SetContextMenu)
+  // .SetMethod("getBounds", &Tray::GetBounds);
 }
 
 }  // namespace api
@@ -252,19 +248,15 @@ void Tray::BuildPrototype(v8::Isolate* isolate,
 
 namespace {
 
-using electron::api::Tray;
-
 void Initialize(v8::Local<v8::Object> exports,
                 v8::Local<v8::Value> unused,
                 v8::Local<v8::Context> context,
                 void* priv) {
   v8::Isolate* isolate = context->GetIsolate();
-  Tray::SetConstructor(isolate, base::BindRepeating(&Tray::New));
-
-  mate::Dictionary dict(isolate, exports);
-  dict.Set(
-      "Tray",
-      Tray::GetConstructor(isolate)->GetFunction(context).ToLocalChecked());
+  gin::Dictionary dict(isolate, exports);
+  dict.Set("createTray",
+           gin::ConvertCallbackToV8Leaked(
+               isolate, base::BindRepeating(&electron::api::Tray::Create)));
 }
 
 }  // namespace
