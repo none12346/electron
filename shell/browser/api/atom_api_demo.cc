@@ -22,6 +22,10 @@ Demo::~Demo() {
   LOG(INFO) << "~Demo()";
 }
 
+std::string Demo::GetTitle() {
+  return "party time!!";
+}
+
 // static
 // mate::WrappableBase* Tray::New(mate::Handle<NativeImage> image,
 //                                mate::Arguments* args) {
@@ -61,8 +65,8 @@ gin::Handle<Demo> Demo::Create(v8::Isolate* isolate) {
 
 gin::ObjectTemplateBuilder Demo::GetObjectTemplateBuilder(
     v8::Isolate* isolate) {
-  return gin::Wrappable<Demo>::GetObjectTemplateBuilder(isolate).SetValue("abc",
-                                                                          12);
+  return gin::Wrappable<Demo>::GetObjectTemplateBuilder(isolate).SetMethod(
+      "getTitle", &Demo::GetTitle);
 }
 
 }  // namespace api

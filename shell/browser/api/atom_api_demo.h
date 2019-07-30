@@ -13,7 +13,7 @@ namespace electron {
 
 namespace api {
 
-class Demo : public gin::TrackableObject<Demo> {
+class Demo : public gin::Wrappable<Demo> {
  public:
   static gin::Handle<Demo> Create(v8::Isolate* isolate);
 
@@ -26,6 +26,8 @@ class Demo : public gin::TrackableObject<Demo> {
  protected:
   explicit Demo();
   ~Demo() override;
+
+  std::string GetTitle();
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Demo);
