@@ -7,13 +7,13 @@
 
 #include "gin/handle.h"
 #include "gin/object_template_builder.h"
-#include "gin/wrappable.h"
+#include "shell/browser/api/trackable_object_gin.h"
 
 namespace electron {
 
 namespace api {
 
-class Demo : public gin::Wrappable<Demo> {
+class Demo : public gin::TrackableObject<Demo> {
  public:
   static gin::Handle<Demo> Create(v8::Isolate* isolate);
 

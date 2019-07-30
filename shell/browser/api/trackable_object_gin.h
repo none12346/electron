@@ -9,6 +9,7 @@
 
 #include "base/bind.h"
 #include "base/memory/weak_ptr.h"
+#include "gin/object_template_builder.h"
 #include "gin/wrappable.h"
 #include "shell/browser/api/event_emitter.h"
 #include "shell/common/key_weak_map.h"
@@ -54,6 +55,9 @@ class TrackableObjectBase {
 template <typename T>
 class TrackableObject : public TrackableObjectBase, public gin::Wrappable<T> {
  public:
+  // virtual gin::ObjectTemplateBuilder GetObjectTemplateBuilder(v8::Isolate*
+  // isolate);
+
   // Mark the JS object as destroyed.
   void MarkDestroyed() {
     v8::Local<v8::Object> wrapper = Wrappable<T>::GetWrapper();
@@ -110,13 +114,14 @@ class TrackableObject : public TrackableObjectBase, public gin::Wrappable<T> {
 
   ~TrackableObject() override { RemoveFromWeakMap(); }
 
-  void InitWith(v8::Isolate* isolate, v8::Local<v8::Object> wrapper) override {
-    // WrappableBase::InitWith(isolate, wrapper); TODO(deermichel)
-    if (!weak_map_) {
-      weak_map_ = new electron::KeyWeakMap<int32_t>;
-    }
-    weak_map_->Set(isolate, weak_map_id_, wrapper);
-  }
+  // void InitWith(v8::Isolate* isolate, v8::Local<v8::Object> wrapper) override
+  // {
+  //   // WrappableBase::InitWith(isolate, wrapper); TODO(deermichel)
+  //   if (!weak_map_) {
+  //     weak_map_ = new electron::KeyWeakMap<int32_t>;
+  //   }
+  //   weak_map_->Set(isolate, weak_map_id_, wrapper);
+  // }
 
  private:
   static int32_t next_id_;
