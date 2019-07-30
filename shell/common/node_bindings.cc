@@ -36,6 +36,7 @@
   V(atom_browser_browser_view)       \
   V(atom_browser_content_tracing)    \
   V(atom_browser_debugger)           \
+  V(atom_browser_demo)               \
   V(atom_browser_dialog)             \
   V(atom_browser_download_item)      \
   V(atom_browser_event)              \
