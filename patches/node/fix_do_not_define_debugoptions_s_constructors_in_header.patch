@@ -15,7 +15,7 @@ By putting the definitions of constructors into the implementation file,
 we can avoid this problem.
 
 diff --git a/src/node_options.cc b/src/node_options.cc
-index 2eed3f822229a9c913b9db40b8b7efccc475c220..762874de9e474612ca329e8913218338dd4958c8 100644
+index 7d71b52d627ef6750282ff4ec16fa469f81d4b2a..fa62f2ba876150be8963fd569ac59028fd0170a1 100644
 --- a/src/node_options.cc
 +++ b/src/node_options.cc
 @@ -26,6 +26,12 @@ Mutex cli_options_mutex;
@@ -32,12 +32,12 @@ index 2eed3f822229a9c913b9db40b8b7efccc475c220..762874de9e474612ca329e8913218338
  #if !NODE_USE_V8_PLATFORM
    if (inspector_enabled) {
 diff --git a/src/node_options.h b/src/node_options.h
-index dbd85b2d584be57619fc5c8d019140f67514f427..ce054e15219f5a181f99618a98374b51312d39d6 100644
+index 5fb23cfda7aebca507174555b78c9a73e837dda0..ce86827024126c6b0d8462c811360057c298ec5b 100644
 --- a/src/node_options.h
 +++ b/src/node_options.h
 @@ -61,11 +61,11 @@ struct InspectPublishUid {
  // per-Isolate, rather than per-Environment.
- class DebugOptions : public Options {
+ class NODE_EXTERN DebugOptions : public Options {
   public:
 -  DebugOptions() = default;
 -  DebugOptions(const DebugOptions&) = default;
