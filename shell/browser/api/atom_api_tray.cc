@@ -6,12 +6,12 @@
 
 #include <string>
 
-#include "base/threading/thread_task_runner_handle.h"
-#include "shell/browser/api/atom_api_menu.h"
+// #include "base/threading/thread_task_runner_handle.h"
+// #include "shell/browser/api/atom_api_menu.h"
 #include "shell/browser/browser.h"
 #include "shell/common/api/atom_api_native_image.h"
 #include "shell/common/api/gin_utils.h"
-#include "shell/common/gin_converters/gfx_converter_gin_adapter.h"
+#include "shell/common/gin_converters/native_image_converter_gin_adapter.h"
 // #include "shell/common/native_mate_converters/image_converter.h"
 // #include "shell/common/native_mate_converters/string16_converter.h"
 #include "shell/common/node_includes.h"
@@ -123,13 +123,13 @@ void Tray::OnDragEnded() {
   // Emit("drag-end");
 }
 
-// void Tray::SetImage(v8::Isolate* isolate, gin::Handle<NativeImage> image) {
-// #if defined(OS_WIN)
-//   tray_icon_->SetImage(image->GetHICON(GetSystemMetrics(SM_CXSMICON)));
-// #else
-//   tray_icon_->SetImage(image->image());
-// #endif
-// }
+void Tray::SetImage(v8::Isolate* isolate, gin::Handle<NativeImage> image) {
+#if defined(OS_WIN)
+  tray_icon_->SetImage(image->GetHICON(GetSystemMetrics(SM_CXSMICON)));
+#else
+  tray_icon_->SetImage(image->image());
+#endif
+}
 
 // void Tray::SetPressedImage(v8::Isolate* isolate,
 //                            gin::Handle<NativeImage> image) {
@@ -226,7 +226,7 @@ gin::ObjectTemplateBuilder Tray::GetObjectTemplateBuilder(
     v8::Isolate* isolate) {
   return gin::Wrappable<Tray>::GetObjectTemplateBuilder(isolate)
       // .MakeDestroyable()
-      // .SetMethod("setImage", &Tray::SetImage)
+      .SetMethod("setImage", &Tray::SetImage)
       // .SetMethod("setPressedImage", &Tray::SetPressedImage)
       .SetMethod("setToolTip", &Tray::SetToolTip)
       .SetMethod("setTitle", &Tray::SetTitle)

@@ -64,7 +64,7 @@ class Tray : public gin::Wrappable<Tray>, public TrayIconObserver {
   void OnMouseExited(const gfx::Point& location, int modifiers) override;
   void OnMouseMoved(const gfx::Point& location, int modifiers) override;
 
-  //   void SetImage(v8::Isolate* isolate, gin::Handle<NativeImage> image);
+  void SetImage(v8::Isolate* isolate, gin::Handle<NativeImage> image);
   //   void SetPressedImage(v8::Isolate* isolate, gin::Handle<NativeImage>
   //   image);
   void SetToolTip(const std::string& tool_tip);

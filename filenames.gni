@@ -510,6 +510,7 @@ filenames = {
     "shell/common/crash_reporter/win/crash_service_main.cc",
     "shell/common/crash_reporter/win/crash_service_main.h",
     "shell/common/gin_converters/gfx_converter_gin_adapter.h",
+    "shell/common/gin_converters/native_image_converter_gin_adapter.h",
     "shell/common/gin_util.h",
     "shell/common/heap_snapshot.cc",
     "shell/common/heap_snapshot.h",
