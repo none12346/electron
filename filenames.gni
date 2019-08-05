@@ -219,8 +219,6 @@ filenames = {
     "shell/browser/net/asar/url_request_asar_job.h",
     "shell/browser/net/atom_cert_verifier.cc",
     "shell/browser/net/atom_cert_verifier.h",
-    "shell/browser/net/atom_network_delegate.cc",
-    "shell/browser/net/atom_network_delegate.h",
     "shell/browser/net/atom_url_loader_factory.cc",
     "shell/browser/net/atom_url_loader_factory.h",
     "shell/browser/net/atom_url_request_job_factory.cc",
