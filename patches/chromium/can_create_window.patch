@@ -5,10 +5,10 @@ Subject: can_create_window.patch
 
 
 diff --git a/content/browser/frame_host/render_frame_host_impl.cc b/content/browser/frame_host/render_frame_host_impl.cc
-index d731d6d9e2626157520ddcaf231781e723d8d2ce..583065369a21acd86b017d716f6670ff67d2e108 100644
+index 4426758898f6419363c1b14f9c4bee6c09e0b501..7aff64133c32b98e4e137a758d87c506f29167b9 100644
 --- a/content/browser/frame_host/render_frame_host_impl.cc
 +++ b/content/browser/frame_host/render_frame_host_impl.cc
-@@ -3848,6 +3848,7 @@ void RenderFrameHostImpl::CreateNewWindow(
+@@ -3853,6 +3853,7 @@ void RenderFrameHostImpl::CreateNewWindow(
            last_committed_origin_, params->window_container_type,
            params->target_url, params->referrer.To<Referrer>(),
            params->frame_name, params->disposition, *params->features,
@@ -17,10 +17,10 @@ index d731d6d9e2626157520ddcaf231781e723d8d2ce..583065369a21acd86b017d716f6670ff
            &no_javascript_access);
  
 diff --git a/content/common/frame.mojom b/content/common/frame.mojom
-index b3eb08bcfd338f0085d7576a78e158a874033f3a..819dd480af5937aaa63b63e38f4d32e4ff7ba8c6 100644
+index 380029a373ce17816824c18803ed68380276eaa1..3a846621febecab61a26b31753fdd1d63958ec47 100644
 --- a/content/common/frame.mojom
 +++ b/content/common/frame.mojom
-@@ -311,6 +311,10 @@ struct CreateNewWindowParams {
+@@ -303,6 +303,10 @@ struct CreateNewWindowParams {
  
    // The window features to use for the new window.
    blink.mojom.WindowFeatures features;
@@ -32,10 +32,10 @@ index b3eb08bcfd338f0085d7576a78e158a874033f3a..819dd480af5937aaa63b63e38f4d32e4
  
  // Operation result when the renderer asks the browser to create a new window.
 diff --git a/content/public/browser/content_browser_client.cc b/content/public/browser/content_browser_client.cc
-index e2b0dcdb14075754a4a1e8a90b3cd9a14a08796b..1f469e9c1001ba63e371456d3cbbbfbddffeabb8 100644
+index cb2e8e600334fa9a61a765ac5890d13726e0a6cc..2a00de4acb1f3fdb7f6552c897feda9ba3063bbe 100644
 --- a/content/public/browser/content_browser_client.cc
 +++ b/content/public/browser/content_browser_client.cc
-@@ -494,6 +494,8 @@ bool ContentBrowserClient::CanCreateWindow(
+@@ -475,6 +475,8 @@ bool ContentBrowserClient::CanCreateWindow(
      const std::string& frame_name,
      WindowOpenDisposition disposition,
      const blink::mojom::WindowFeatures& features,
@@ -45,10 +45,10 @@ index e2b0dcdb14075754a4a1e8a90b3cd9a14a08796b..1f469e9c1001ba63e371456d3cbbbfbd
      bool opener_suppressed,
      bool* no_javascript_access) {
 diff --git a/content/public/browser/content_browser_client.h b/content/public/browser/content_browser_client.h
-index a14b357dca0133d25e06b53c19926a7598258382..46399a321845e04f67d8424acddec2636b2d9cc6 100644
+index 5fb36eabea0dc9ffa7cbda6c35d8419804be4aba..357dde3fbc65b5ebc91303865c61c5f687062e11 100644
 --- a/content/public/browser/content_browser_client.h
 +++ b/content/public/browser/content_browser_client.h
-@@ -175,6 +175,7 @@ class RenderFrameHost;
+@@ -177,6 +177,7 @@ class RenderFrameHost;
  class RenderProcessHost;
  class RenderViewHost;
  class ResourceContext;
@@ -56,7 +56,7 @@ index a14b357dca0133d25e06b53c19926a7598258382..46399a321845e04f67d8424acddec263
  class SerialDelegate;
  class SiteInstance;
  class SpeechRecognitionManagerDelegate;
-@@ -778,6 +779,8 @@ class CONTENT_EXPORT ContentBrowserClient {
+@@ -763,6 +764,8 @@ class CONTENT_EXPORT ContentBrowserClient {
        const std::string& frame_name,
        WindowOpenDisposition disposition,
        const blink::mojom::WindowFeatures& features,
@@ -66,7 +66,7 @@ index a14b357dca0133d25e06b53c19926a7598258382..46399a321845e04f67d8424acddec263
        bool opener_suppressed,
        bool* no_javascript_access);
 diff --git a/content/renderer/render_view_impl.cc b/content/renderer/render_view_impl.cc
-index 561f409be27c004629455fc3392463fa43313a73..222db08480b15a18d50f0ef8d02ea6afb1681961 100644
+index 6139273ec4c19906b79f682eccae396a8e3bb588..1be3d5ddb1d351e40a2c324f31283380375c238b 100644
 --- a/content/renderer/render_view_impl.cc
 +++ b/content/renderer/render_view_impl.cc
 @@ -75,6 +75,7 @@
@@ -75,9 +75,9 @@ index 561f409be27c004629455fc3392463fa43313a73..222db08480b15a18d50f0ef8d02ea6af
  #include "content/renderer/loader/request_extra_data.h"
 +#include "content/renderer/loader/web_url_request_util.h"
  #include "content/renderer/media/audio/audio_device_factory.h"
- #include "content/renderer/media/stream/media_stream_device_observer.h"
- #include "content/renderer/media/video_capture/video_capture_impl_manager.h"
-@@ -1368,6 +1369,8 @@ WebView* RenderViewImpl::CreateView(
+ #include "content/renderer/media/webrtc/peer_connection_dependency_factory.h"
+ #include "content/renderer/media/webrtc/rtc_peer_connection_handler.h"
+@@ -1361,6 +1362,8 @@ WebView* RenderViewImpl::CreateView(
    }
    params->features = ConvertWebWindowFeaturesToMojoWindowFeatures(features);
  
@@ -87,10 +87,10 @@ index 561f409be27c004629455fc3392463fa43313a73..222db08480b15a18d50f0ef8d02ea6af
    // moved on send.
    bool is_background_tab =
 diff --git a/content/shell/browser/web_test/web_test_content_browser_client.cc b/content/shell/browser/web_test/web_test_content_browser_client.cc
-index dacecdd4d0195e999f11fd2e1dfaabe95a639263..c5b88ee2561561c0b8a8032d32255645ce30c450 100644
+index 4c639ff453f778bee39726231c920fa6e0b65134..3367f6982e047dcc3654ed20e21b74dbb90dc9cc 100644
 --- a/content/shell/browser/web_test/web_test_content_browser_client.cc
 +++ b/content/shell/browser/web_test/web_test_content_browser_client.cc
-@@ -308,6 +308,8 @@ bool WebTestContentBrowserClient::CanCreateWindow(
+@@ -305,6 +305,8 @@ bool WebTestContentBrowserClient::CanCreateWindow(
      const std::string& frame_name,
      WindowOpenDisposition disposition,
      const blink::mojom::WindowFeatures& features,
@@ -100,10 +100,10 @@ index dacecdd4d0195e999f11fd2e1dfaabe95a639263..c5b88ee2561561c0b8a8032d32255645
      bool opener_suppressed,
      bool* no_javascript_access) {
 diff --git a/content/shell/browser/web_test/web_test_content_browser_client.h b/content/shell/browser/web_test/web_test_content_browser_client.h
-index 4f00217da5a4f6f3d7410b82352fcb94e7f4a8fd..33e30d6a816e87dade0a26710a8f71fc6f630f34 100644
+index 8fe2e1d0b24f42ba7b2c7e40db78a3ed1d6f8341..7e6459e68ad3611b128d7f7f7604b77a66c40435 100644
 --- a/content/shell/browser/web_test/web_test_content_browser_client.h
 +++ b/content/shell/browser/web_test/web_test_content_browser_client.h
-@@ -69,6 +69,8 @@ class WebTestContentBrowserClient : public ShellContentBrowserClient {
+@@ -67,6 +67,8 @@ class WebTestContentBrowserClient : public ShellContentBrowserClient {
                         const std::string& frame_name,
                         WindowOpenDisposition disposition,
                         const blink::mojom::WindowFeatures& features,
